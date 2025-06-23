@@ -118,14 +118,14 @@
     <button id="startBtn" onclick="goToStep2()">Mulai</button>
   </div>
 
-  <!-- STEP 2: Fine / Bad -->
-  <div id="step2" class="hidden">
-    <h1>Hai <span id="nameDisplay"></span>! Gimana mood hari ini?</h1>
-    <div class="button-container">
-      <button id="fineBtn">Baik</button>
-      <button id="badBtn">Jelek</button>
-    </div>
+ <!-- STEP 2: Fine / Bad -->
+<div id="step2" class="hidden">
+  <h1>Hai <span id="nameDisplay"></span>! Gimana mood hari ini?</h1>
+  <div class="button-container" style="position: relative; height: 100px;">
+    <button id="fineBtn">Baik</button>
+    <button id="badBtn" style="position: absolute;">Jelek</button>
   </div>
+</div>
 
   <!-- STEP 3 -->
   <div id="step3" class="hidden">
@@ -196,17 +196,17 @@
     }
 
     let moveCount = 0;
-    badBtn.addEventListener("mousemove", () => {
-      if (moveCount > 50) return;
-      moveCount++;
-      const maxX = window.innerWidth - badBtn.offsetWidth;
-      const maxY = window.innerHeight - badBtn.offsetHeight;
-      const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
-      badBtn.style.position = "absolute";
-      badBtn.style.left = x + "px";
-      badBtn.style.top = y + "px";
-    });
+badBtn.addEventListener("mousemove", () => {
+  if (moveCount > 50) return;
+  moveCount++;
+  const container = badBtn.parentElement;
+  const maxX = container.offsetWidth - badBtn.offsetWidth;
+  const maxY = container.offsetHeight - badBtn.offsetHeight;
+  const x = Math.random() * maxX;
+  const y = Math.random() * maxY;
+  badBtn.style.left = x + "px";
+  badBtn.style.top = y + "px";
+});
 
     fineBtn.addEventListener("click", () => {
       document.getElementById("step2").classList.add("hidden");
