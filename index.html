@@ -2,16 +2,21 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>testing</title>
+  <title>🎉 Ulang Tahun Spesial 🎉</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       font-family: 'Comic Sans MS', cursive, sans-serif;
       background: linear-gradient(to bottom right, #ffe6f0, #d0f4ff);
       height: 100vh;
-      overflow: hidden;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -19,10 +24,13 @@
       text-align: center;
       position: relative;
     }
+
     h1, h2 {
       color: #880e4f;
     }
+
     .hidden { display: none; }
+
     button {
       padding: 12px 25px;
       font-size: 16px;
@@ -35,6 +43,7 @@
       box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
       transition: all 0.2s ease-in-out;
     }
+
     button:hover {
       transform: scale(1.05);
       opacity: 0.9;
@@ -59,6 +68,7 @@
       font-size: 1.5rem;
       animation: shake 1s infinite alternate;
     }
+
     @keyframes shake {
       from { transform: rotate(-1deg); }
       to { transform: rotate(1deg); }
@@ -71,6 +81,7 @@
       transform: translateY(100px);
       transition: all 1s ease-out;
     }
+
     #cake.show {
       opacity: 1;
       transform: translateY(0);
@@ -139,32 +150,33 @@
   <!-- STEP 5 -->
   <div id="final" class="hidden">
     <div id="message">
-      <br>
-      <br>
-      <br>
+      <br><br><br>
       HOREEEEE </br>
-      🎉 Selamat ulang tahun, <strong><span id="finalName"></span></strong>! 🎉<br>
-      <br>
+      🎉 Selamat ulang tahun, <strong><span id="finalName"></span></strong>! 🎉<br><br>
       <img id="cake" src="image-removebg-preview.png" alt="Cake">
       <p style="margin-top: 20px; font-size: 1.1rem; color: #880e4f;">
-  Hari ini... adalah hari yang spesial banget,  
-  karena ada seseorang yang aku kenal lahir ke dunia  
-  <br><br>
-  Kamu tuh... berkah yang turun kayak embun pagi, adem, tenang, dan bikin orang di sekitar kamu bahagia  
-  <br><br>
-  Meski dunia kadang berisik dan orang lain suka nge-judge semaunya,  
-  kamu tetap hebat karena jadi diri sendiri (｡•̀ᴗ-)✧  
-  <br><br>
-   Semoga setiap langkahmu selalu dilimpahi berkah bagaikan embun (〃´▽｀〃)  
-   <br><br>
-   Selamat ulang tahun yaa, <strong><span id="finalName"></span></strong>
-  <br><br>
+        Hari ini... adalah hari yang spesial banget,  
+        karena ada seseorang yang aku kenal lahir ke dunia  
+        <br><br>
+        Kamu tuh... berkah yang turun kayak embun pagi,  
+        adem, tenang, dan bikin orang di sekitar kamu bahagia  
+        <br><br>
+        Meski dunia kadang berisik dan orang lain suka nge-judge semaunya,  
+        kamu tetap hebat karena jadi diri sendiri (｡•̀ᴗ-)✧  
+        <br><br>
+         Semoga setiap langkahmu selalu dilimpahi berkah bagaikan embun (〃´▽｀〃)  
+        bahkan ketika dunia terasa kacau pun, kamu tetap bersinar (๑˘︶˘๑) 
+        <br><br>
+        Jadi hari ini… ayo kita sorak-soraiii! 
+        hidup di dunia, jadi bahagiaa~  
+        <br><br>
+        Selamat ulang tahun yaa, <strong><span id="finalName"></span></strong>
+      </p>
     </div>
   </div>
 
   <canvas id="confettiCanvas"></canvas>
 
-  <!-- 🎵 AUDIO PLAYER -->
   <audio id="bgMusic" loop>
     <source src="tnf.mp3" type="audio/mp3">
   </audio>
@@ -183,7 +195,10 @@
       document.getElementById("finalName").innerText = name;
     }
 
-    badBtn.addEventListener("mouseenter", () => {
+    let moveCount = 0;
+    badBtn.addEventListener("mousemove", () => {
+      if (moveCount > 50) return;
+      moveCount++;
       const maxX = window.innerWidth - badBtn.offsetWidth;
       const maxY = window.innerHeight - badBtn.offsetHeight;
       const x = Math.random() * maxX;
@@ -207,24 +222,14 @@
       document.getElementById("step4").classList.add("hidden");
       document.getElementById("final").classList.remove("hidden");
       document.getElementById("cake").classList.add("show");
-      document.getElementById("bgMusic").play(); // ⬅ Tambahkan ini
+
+      const audio = document.getElementById("bgMusic");
+      audio.currentTime = 1;
+      audio.play();
+
       startConfetti();
     }
 
-    function showFinal() {
-  document.getElementById("step4").classList.add("hidden");
-  document.getElementById("final").classList.remove("hidden");
-  document.getElementById("cake").classList.add("show");
-
-  // 🎵 Mainkan lagu mulai dari detik ke-2
-  const audio = document.getElementById("bgMusic");
-  audio.currentTime = 1; // mulai dari detik ke-2
-  audio.play();
-
-  startConfetti();
-}
-
-    // Confetti 🎊
     const canvas = document.getElementById("confettiCanvas");
     const ctx = canvas.getContext("2d");
 
