@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>testing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(to bottom right, #ffe6f0, #d0f4ff);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+    }
+    h1, h2 {
+      color: #880e4f;
+    }
+    .hidden { display: none; }
+    button {
+      padding: 12px 25px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+      color: white;
+      font-weight: bold;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+      transition: all 0.2s ease-in-out;
+    }
+    button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    #fineBtn { background-color: #40C4FF; }
+    #badBtn { background-color: #FF4081; }
+
+    #yesBtn,
+    button[onclick="goToStep4()"],
+    button[onclick="showFinal()"] {
+      background-color: #00C853;
+    }
+
+    button[onclick="document.getElementById('tease1').classList.remove('hidden')"],
+    button[onclick="document.getElementById('tease2').classList.remove('hidden')"] {
+      background-color: #FFD600;
+      color: #333;
+    }
+
+    #message {
+      font-size: 1.5rem;
+      animation: shake 1s infinite alternate;
+    }
+    @keyframes shake {
+      from { transform: rotate(-1deg); }
+      to { transform: rotate(1deg); }
+    }
+
+    #cake {
+      width: 180px;
+      margin-top: 20px;
+      opacity: 0;
+      transform: translateY(100px);
+      transition: all 1s ease-out;
+    }
+    #cake.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #startBtn {
+      background-color: #7C4DFF;
+      color: white;
+      font-weight: bold;
+      box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    #startBtn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- STEP 1: Input nama -->
+  <div id="step1">
+    <h1>Halo! Siapa nama kamu?</h1>
+    <input type="text" id="nameInput" placeholder="Masukkan namamu..." />
+    <br><br>
+    <button id="startBtn" onclick="goToStep2()">Mulai</button>
+  </div>
+
+  <!-- STEP 2: Fine / Bad -->
+  <div id="step2" class="hidden">
+    <h1>Hai <span id="nameDisplay"></span>! Gimana mood hari ini?</h1>
+    <div class="button-container">
+      <button id="fineBtn">Baik</button>
+      <button id="badBtn">Jelek</button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="step3" class="hidden">
+    <h2>Waaaahh, gimana aja hari kamu <span id="nameDisplay2"></span>?</h2>
+    <div class="button-container">
+      <button onclick="goToStep4()">Seruu</button>
+      <button onclick="document.getElementById('tease1').classList.remove('hidden')">Kepo deh</button>
+    </div>
+    <div id="tease1" class="hidden" style="color:red;">JAHAT BANGEET (ง •̀_•́)ง</div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div id="step4" class="hidden">
+    <h2>Hehehe, katanya ada yang lagi ultah niih, siapa yaaaa? (つ﹏⊂)</h2>
+    <div class="button-container">
+      <button onclick="showFinal()">AKUU</button>
+      <button onclick="document.getElementById('tease2').classList.remove('hidden')">bukan aku</button>
+    </div>
+    <div id="tease2" class="hidden" style="color:red;">Yakin bukan kamu (つ﹏⊂) ?</div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div id="final" class="hidden">
+    <div id="message">
+      <br>
+      <br>
+      <br>
+      HOREEEEE </br>
+      🎉 Selamat ulang tahun, <strong><span id="finalName"></span></strong>! 🎉<br>
+      <br>
+      <img id="cake" src="image-removebg-preview.png" alt="Cake">
+      <p style="margin-top: 20px; font-size: 1.1rem; color: #880e4f;">
+  Hari ini... adalah hari yang spesial banget,  
+  karena ada seseorang yang aku kenal lahir ke dunia  
+  <br><br>
+  Kamu tuh... berkah yang turun kayak embun pagi, adem, tenang, dan bikin orang di sekitar kamu bahagia  
+  <br><br>
+  Meski dunia kadang berisik dan orang lain suka nge-judge semaunya,  
+  kamu tetap hebat karena jadi diri sendiri (｡•̀ᴗ-)✧  
+  <br><br>
+   Semoga setiap langkahmu selalu dilimpahi berkah bagaikan embun (〃´▽｀〃)  
+   <br><br>
+   Selamat ulang tahun yaa, <strong><span id="finalName"></span></strong>
+  <br><br>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- 🎵 AUDIO PLAYER -->
+  <audio id="bgMusic" loop>
+    <source src="tnf.mp3" type="audio/mp3">
+  </audio>
+
+  <script>
+    const fineBtn = document.getElementById("fineBtn");
+    const badBtn = document.getElementById("badBtn");
+
+    function goToStep2() {
+      const name = document.getElementById("nameInput").value.trim();
+      if (name === "") return alert("Masukin dulu dong namanya (≧◡≦)");
+      document.getElementById("step1").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+      document.getElementById("nameDisplay").innerText = name;
+      document.getElementById("nameDisplay2").innerText = name;
+      document.getElementById("finalName").innerText = name;
+    }
+
+    badBtn.addEventListener("mouseenter", () => {
+      const maxX = window.innerWidth - badBtn.offsetWidth;
+      const maxY = window.innerHeight - badBtn.offsetHeight;
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+      badBtn.style.position = "absolute";
+      badBtn.style.left = x + "px";
+      badBtn.style.top = y + "px";
+    });
+
+    fineBtn.addEventListener("click", () => {
+      document.getElementById("step2").classList.add("hidden");
+      document.getElementById("step3").classList.remove("hidden");
+    });
+
+    function goToStep4() {
+      document.getElementById("step3").classList.add("hidden");
+      document.getElementById("step4").classList.remove("hidden");
+    }
+
+    function showFinal() {
+      document.getElementById("step4").classList.add("hidden");
+      document.getElementById("final").classList.remove("hidden");
+      document.getElementById("cake").classList.add("show");
+      document.getElementById("bgMusic").play(); // ⬅ Tambahkan ini
+      startConfetti();
+    }
+
+    function showFinal() {
+  document.getElementById("step4").classList.add("hidden");
+  document.getElementById("final").classList.remove("hidden");
+  document.getElementById("cake").classList.add("show");
+
+  // 🎵 Mainkan lagu mulai dari detik ke-2
+  const audio = document.getElementById("bgMusic");
+  audio.currentTime = 1; // mulai dari detik ke-2
+  audio.play();
+
+  startConfetti();
+}
+
+    // Confetti 🎊
+    const canvas = document.getElementById("confettiCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    const confetti = [];
+    const colors = ["#ff0a54", "#ff477e", "#ff85a1", "#fbb1bd", "#f9bec7", "#ffd166", "#06d6a0", "#118ab2"];
+
+    function createConfettiPiece() {
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * -canvas.height,
+        r: Math.random() * 6 + 4,
+        d: Math.random() * 40 + 10,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.random() * 10 - 10,
+        tiltAngle: 0,
+        tiltAngleIncrement: Math.random() * 0.07 + 0.05
+      };
+    }
+
+    for (let i = 0; i < 150; i++) {
+      confetti.push(createConfettiPiece());
+    }
+
+    function drawConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      confetti.forEach(c => {
+        ctx.beginPath();
+        ctx.lineWidth = c.r;
+        ctx.strokeStyle = c.color;
+        ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+        ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.d / 4);
+        ctx.stroke();
+      });
+      updateConfetti();
+      requestAnimationFrame(drawConfetti);
+    }
+
+    function updateConfetti() {
+      confetti.forEach((c, i) => {
+        c.y += Math.cos(c.d) + 1 + c.r / 2;
+        c.tiltAngle += c.tiltAngleIncrement;
+        c.tilt = Math.sin(c.tiltAngle) * 15;
+        if (c.y > canvas.height) {
+          confetti[i] = createConfettiPiece();
+        }
+      });
+    }
+
+    function startConfetti() {
+      drawConfetti();
+    }
+  </script>
+</body>
+</html>
